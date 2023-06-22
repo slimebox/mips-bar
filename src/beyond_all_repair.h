@@ -1,4 +1,6 @@
 #pragma once
+namespace beyond_all_repair
+{
 #include <lib.h>
 #include <destoer.h>
 
@@ -54,6 +56,17 @@ struct Section
     u32 size;
     u8* ptr;
 };
+
+struct Opcode
+{
+    u32 op = 0;
+    u32 type = 0;
+    u32 rd = 0;
+    u32 rs = 0;
+    u32 rt = 0;
+    s16 imm = 0;
+};
+
 
 // TODO: need a way to get a function by block from an arbitary address
 // but we aernt going to worry about this just yet
@@ -122,3 +135,8 @@ Section make_section(u64 base,u32 size,u8* ptr);
 b32 lookup_section(Program& program, u64 addr, Section* section);
 
 Program disass_elf(std::vector<u8>& buf);
+
+u32 get_opcode_type(u32 opcode);
+
+
+}

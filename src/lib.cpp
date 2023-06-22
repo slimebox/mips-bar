@@ -1,4 +1,5 @@
-
+namespace beyond_all_repair
+{
 
 
 template<typename access_type>
@@ -19,4 +20,6 @@ access_type read(const u8* buf, b32 be)
 u64 abs(u64 v)
 {
 	return s64(v) < 0? -v : v;
+}
+
 }

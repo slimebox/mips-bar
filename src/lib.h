@@ -10,10 +10,15 @@
 #include <iterator>
 #include <iostream>
 
+
+namespace beyond_all_repair
+{
+
 // we dont have std::print yet
 // so make a wrapper
 template<typename... Args>
 inline void print(const char* fmt, Args... args)
 {
     printf("%s",std::vformat(fmt, std::make_format_args(args...)).c_str());
+}
 }

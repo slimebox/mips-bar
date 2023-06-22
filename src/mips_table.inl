@@ -1,3 +1,4 @@
+
 // NOTE: instruciton classes are specified by UPPER CASE
 static constexpr Instr INSTR_TABLE[INSTR_TABLE_SIZE] = 
 {

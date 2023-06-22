@@ -1,34 +1,37 @@
-struct Config
+namespace beyond_all_repair
 {
-	b32 disassemble = false;
-	b32 print_external = false;
-	b32 print_addr = false;
-	b32 print_opcodes = false;
-	b32 gen = false;
-	b32 linear = false;
-};
-
-Config parse_config(const char* flags)
-{
-	Config config;
-
-	while(*flags)
+	struct Config
 	{
-		auto c = *flags;
+		b32 disassemble = false;
+		b32 print_external = false;
+		b32 print_addr = false;
+		b32 print_opcodes = false;
+		b32 gen = false;
+		b32 linear = false;
+	};
 
-		switch(c)
+	Config parse_config(const char* flags)
+	{
+		Config config;
+
+		while(*flags)
 		{
-			case 'd': config.disassemble = true; break;
-			case 'g': config.gen = true; break;
-			case 'a': config.print_addr = true; break;
-			case 'o': config.print_opcodes = true; break;
-			case 'e': config.print_external = true; break;
-			case 'l': config.linear = true; break;
-            default: break;
+			auto c = *flags;
+
+			switch(c)
+			{
+				case 'd': config.disassemble = true; break;
+				case 'g': config.gen = true; break;
+				case 'a': config.print_addr = true; break;
+				case 'o': config.print_opcodes = true; break;
+				case 'e': config.print_external = true; break;
+				case 'l': config.linear = true; break;
+				default: break;
+			}
+
+			flags++;
 		}
 
-		flags++;
+		return config;
 	}
-
-    return config;
 }

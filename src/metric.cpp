@@ -1,4 +1,5 @@
-
+namespace beyond_all_repair
+{
 struct FuncStat
 {
     u32 references = 0;
@@ -160,4 +161,6 @@ Stats scan_program_stats(Program& program)
     }
 
     return stat;    
+}
+
 }

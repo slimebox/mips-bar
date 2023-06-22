@@ -1,3 +1,6 @@
+
+namespace beyond_all_repair
+{
 static constexpr u32 BASE_OFFSET = 0;
 static constexpr u32 SPECIAL_OFFSET = BASE_OFFSET + INSTR_TYPE_MASK + 1;
 static constexpr u32 REGIMM_OFFSET = SPECIAL_OFFSET + FUNCT_MASK + 1;
@@ -154,7 +157,9 @@ instr_class class_from_opcode(const Opcode& opcode)
 {
     UNUSED(INSTR_CLASS_NAMES);
 
-    switch(opcode.type)
+    const u32 type = get_opcode_type(opcode.op);
+
+    switch(type)
     {
         case 0b000'000: return instr_class::special;
 
@@ -176,7 +181,8 @@ instr_class class_from_opcode(const Opcode& opcode)
 // NOTE: old decoding method kept around for comparsion
 const Instr* decode_instr_chained(const Opcode& opcode, u32 version)
 {
-    const Instr* instr = &INSTR_TABLE[opcode.type];
+    const u32 type = get_opcode_type(opcode.op);
+    const Instr* instr = &INSTR_TABLE[type];
 
     // opcode not supported on this version of the architecture
     if(instr->version > version)
@@ -194,7 +200,8 @@ const Instr* decode_instr_chained(const Opcode& opcode, u32 version)
 
 const Instr* decode_instr(const Opcode& opcode, u32 version)
 {
-    const auto decode = DECODE_TABLE[opcode.type];
+    const u32 type = get_opcode_type(opcode.op);
+    const auto decode = DECODE_TABLE[type];
 
     const Instr* instr = &decode.instr_table[(opcode.op >> decode.shift) & decode.mask];
 
@@ -224,7 +231,6 @@ Opcode make_opcode(const u32 op)
     Opcode opcode;
 
     opcode.op = op;
-    opcode.type = op >> 26 & INSTR_TYPE_MASK;
     opcode.rd = (op >> 11) & REG_MASK;
     opcode.rt = (op >> 16) & REG_MASK;
     opcode.rs = (op >> 21) & REG_MASK;
@@ -262,4 +268,6 @@ const Instr* decode_regimm(const Opcode& opcode,u32 version)
     }
 
     return instr;
+}
+
 }

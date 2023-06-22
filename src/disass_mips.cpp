@@ -1,3 +1,5 @@
+namespace beyond_all_repair
+{
 // TODO: add abilitly to disable pseudo ops
 
 // default instr formatter
@@ -172,8 +174,10 @@ std::string disass_mips(Program& program, u64 addr, const Opcode &opcode)
 
 std::string fmt_opcode(const Opcode& opcode)
 {
+    const u32 type = get_opcode_type(opcode.op);
+
     return std::format("op: 0x{:x}, rt: 0x{:x}, rs 0x{:x}, rd 0x{:x}, imm, 0x{:04x}, type: 0b{:06b}",opcode.op, opcode.rt, opcode.rs,
-        opcode.rd, opcode.imm, opcode.type);
+        opcode.rd, opcode.imm, type);
 }
 
 // TODO: note this is a debugging handler when we hit an actual unknown up
@@ -375,4 +379,5 @@ std::string disass_break(Program& program, u64 addr, const Opcode& opcode)
     UNUSED(program); UNUSED(addr);  UNUSED(opcode);
 
     return std::format("break");
+}
 }

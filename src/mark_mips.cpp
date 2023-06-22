@@ -1,4 +1,5 @@
-
+namespace beyond_all_repair
+{
 // NOTE: this is unimpl stub 
 b32 unknown_mark(Program& program,Func& func,  Block& block, u64 pc, const Opcode& opcode)
 {
@@ -363,4 +364,5 @@ b32 mark_bltzal(Program& program, Func& func, Block& block, u64 pc, const Opcode
     add_func(program,target,pc,SIZE_UNK,default_func_name(target));
 
     return false;
+}
 }

@@ -4,12 +4,13 @@
 
 using namespace destoer;
 
-#include <config.cpp>
-#include <disass.cpp>
+#include <beyond_all_repair.cpp>
 
 
 int main(int argc, char* argv[])
 {
+	using namespace beyond_all_repair;
+
 	// TODO: add a proper config but just keep a simple read in the whole ELF
 	// and disassemble the entire thing
 	if(argc < 2 || *argv[1] != '-')

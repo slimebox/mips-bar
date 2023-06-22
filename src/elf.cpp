@@ -1,5 +1,7 @@
-#include <disass.h>
+#include <beyond_all_repair.h>
 
+namespace beyond_all_repair
+{
 
 struct SectionHeader
 {
@@ -377,4 +379,6 @@ Program disass_elf(std::vector<u8>& buf)
     disassemble_program(program);
 
     return program;
+}
+
 }

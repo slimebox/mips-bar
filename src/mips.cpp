@@ -1,5 +1,7 @@
-#include <disass.h>
+#include <beyond_all_repair.h>
 
+namespace beyond_all_repair
+{
 
 enum class instr_type
 {
@@ -37,18 +39,6 @@ enum class instr_type
     unk,
 };
 
-
-
-
-struct Opcode
-{
-    u32 op = 0;
-    u32 type = 0;
-    u32 rd = 0;
-    u32 rs = 0;
-    u32 rt = 0;
-    s16 imm = 0;
-};
 
 
 static constexpr u32 REG_MASK = 0b111'11;
@@ -170,11 +160,15 @@ enum MIPS_VER
     MIPS4,
 };
 
+}
+
 
 #include <disass_mips.cpp>
 #include <mark_mips.cpp>
 #include <decode_mips.cpp>
 
+namespace beyond_all_repair
+{
 
 // TODO: make this cache the section
 
@@ -318,4 +312,12 @@ void print_console_linear_mips(Program& program, Config& config)
     
         puts("\n");
     }    
+}
+
+
+u32 get_opcode_type(u32 opcode)
+{
+    return (opcode >> 26) & INSTR_TYPE_MASK;
+}
+
 }
