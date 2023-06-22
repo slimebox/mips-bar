@@ -211,6 +211,8 @@ void mark_block_mips(Program& program,Func& func,Block& block)
             break;
         }
     }
+
+    block.hash = hash_block(program,block);
 }
 
 void print_console_mips(Program& program, Config& config)
@@ -238,7 +240,7 @@ void print_console_mips(Program& program, Config& config)
                 if(!read_program(program,addr, &op))
                 {
                     print("Warning addr 0x{:x} out of range for block\n",addr);
-                    exit(1);
+                    return;
                 }
 
                 addr += MIPS_INSTR_SIZE;
@@ -287,7 +289,7 @@ void print_console_linear_mips(Program& program, Config& config)
             if(!read_program(program,addr, &op))
             {
                 print("Warning addr 0x{:x} out of range for block\n",addr);
-                exit(1);
+                return;
             }
 
             addr += MIPS_INSTR_SIZE;

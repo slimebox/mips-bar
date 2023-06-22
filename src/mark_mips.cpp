@@ -365,4 +365,44 @@ b32 mark_bltzal(Program& program, Func& func, Block& block, u64 pc, const Opcode
 
     return false;
 }
+
+
+u64 hash_block(Program& program,Block& block)
+{
+    // TODO: how viable is a hash for this purpose?
+    static constexpr u32 HASH_MAGIC = 0x02579275;
+
+    u64 hash = 0;
+
+    for(u32 i = 0; i < block.size; i += MIPS_INSTR_SIZE)
+    {
+        const u32 addr = i + block.addr;
+        u32 op = 0;
+        if(!read_program(program,addr, &op))
+        {
+            printf("warning block hash at %x is out of bounds\n",addr);
+            return 0;
+        }
+
+        hash = (hash * HASH_MAGIC) ^ op;
+    }
+
+    return hash;
+}
+
+// delete every block inside a function
+void trash_block_func(Program& program, Block& block)
+{
+    const u64 func_addr = block.func;
+
+    auto& func = program.func_lookup[func_addr];
+
+    for(u64 block_start : func.block_list)
+    {
+        program.block_lookup.erase(block_start);
+    }
+
+    program.func_lookup.erase(func_addr);
+}
+
 }

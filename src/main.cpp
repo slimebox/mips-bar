@@ -3,14 +3,12 @@
 #include <destoer.cpp>
 
 using namespace destoer;
-
+using namespace beyond_all_repair;
 #include <beyond_all_repair.cpp>
 
 
 int main(int argc, char* argv[])
 {
-	using namespace beyond_all_repair;
-
 	// TODO: add a proper config but just keep a simple read in the whole ELF
 	// and disassemble the entire thing
 	if(argc < 2 || *argv[1] != '-')
@@ -44,10 +42,12 @@ int main(int argc, char* argv[])
 		{
 			if(argc == 3)
 			{
-				auto program = disass_elf(buf);
+				auto [sections,program] = disass_elf(buf);
 
 				// finally disassemble the program
 				disassemble_console(program,config);
+
+				delete sections;
 			}
 
 			else

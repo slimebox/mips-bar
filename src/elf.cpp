@@ -53,15 +53,41 @@ SectionHeader read_section_header(const u8* section_header, b32 is_64, b32 is_be
 }
 
 
-// how to read program out of a elf bin
-b32 read_elf(Program& program, u64 addr, void* out, u32 size)
+struct Section
+{
+    u64 base;
+    u32 size;
+    u8* ptr;
+};
+
+
+Section make_section(u64 base,u32 size,u8* ptr)
 {
     Section section;
-    if(!lookup_section(program,addr,&section))
+    section.base = base;
+    section.size = size;
+    section.ptr = ptr;
+
+    return section;
+}
+
+// defualt section lookup (SLOW!)
+b32 lookup_section(const std::vector<Section>& sections, u64 addr, Section* out)
+{
+    for(const auto& section : sections)
     {
-        return false;
+        if(section.base <= addr && section.base + section.size  >= addr)
+        {
+            *out = section;
+            return true;
+        }
     }
 
+    return false;
+}
+
+b32 read_section(Section& section, u64 addr, void *out, u32 size)
+{
     // transform the address
     addr -= section.base;
 
@@ -71,10 +97,23 @@ b32 read_elf(Program& program, u64 addr, void* out, u32 size)
     }
 
     // read out the data
-    memcpy(out,&section.ptr[addr],size);
-    
+    memcpy(out,&section.ptr[addr],size); 
 
-    return true;
+    return true;   
+}
+
+// how to read program out of a elf bin
+b32 read_elf(Program& program, u64 addr, void* out, u32 size)
+{
+    const auto &sections = *(std::vector<Section>*)program.data;
+
+    Section section;
+    if(!lookup_section(sections,addr,&section))
+    {
+        return false;
+    }
+
+    return read_section(section,addr,out,size);
 }
 
 void read_sym_table(std::map<u64,Symbol> &symbols,const u8* sym_tab, const u8* sym_tab_end, 
@@ -151,7 +190,7 @@ std::pair<SectionHeader,b32> scan_header(const u8* section_header, const char* n
 
 // TODO: get a rough set of programs to test this on (a compiler test suite along with a couple unix tools is probably the easiest to come by)
 
-Program disass_elf(std::vector<u8>& buf)
+std::pair<std::vector<Section>*,Program> disass_elf(std::vector<u8>& buf)
 {
     // check we atleast have a valid elf headers worth of bytes to read out
     // https://man7.org/linux/man-pages/man5/elf.5.html
@@ -218,7 +257,7 @@ Program disass_elf(std::vector<u8>& buf)
     SectionHeader dyn_string_header;
     b32 dyn_string_table_found = false;
 
-    std::vector<Section> sections;
+    auto sections_ptr = new std::vector<Section>;
     u64 gp = 0;
 
     // pull the section name header so that we can get the correct string table later
@@ -302,7 +341,7 @@ Program disass_elf(std::vector<u8>& buf)
             {
                 // NOTE: we currently overapproximate the size
                 auto section = make_section(text_header.vaddr,buf.size() - text_header.offset,&buf[text_header.offset]);
-                sections.push_back(section);
+                (*sections_ptr).push_back(section);
             }
 
             if(strncmp(header_name,".got",len) == 0)
@@ -353,7 +392,7 @@ Program disass_elf(std::vector<u8>& buf)
 
 
     // disassemble all the sections
-    Program program = make_program(entry_point,is_be,read_elf,sections);
+    Program program = make_program(entry_point,is_be,read_elf,sections_ptr);
 
     // TODO: replace this with proper emulation
     program.gp = gp;
@@ -378,7 +417,7 @@ Program disass_elf(std::vector<u8>& buf)
 
     disassemble_program(program);
 
-    return program;
+    return std::pair{sections_ptr,program};
 }
 
 }

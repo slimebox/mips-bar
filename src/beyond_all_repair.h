@@ -21,6 +21,8 @@ struct Block
 
     // default to LOC_%08x but some may have proper names
     std::string name;
+
+    u64 hash = 0;
 };
 
 static constexpr u32 SIZE_UNK = 0xffff'ffff;
@@ -48,14 +50,6 @@ struct Func
 struct Program;
 // TODO: this should probably allow reading different sizes
 using READ_FUNC = b32 (*)(Program& program, u64 addr, void* out,u32 size);
-
-
-struct Section
-{
-    u64 base;
-    u32 size;
-    u8* ptr;
-};
 
 struct Opcode
 {
@@ -85,10 +79,7 @@ struct Program
     // function to perfrom address translation
     READ_FUNC read_func;
 
-    // TODO: for now just scan this
-    // NOTE: this will expect the section to be live while this is active
-    // i.e this needs to die before executable does
-    std::vector<Section> section;
+    void* data;
 
     // what targets have not been checked yet?
     std::vector<u64> func_target;
@@ -119,7 +110,7 @@ b32 read_program(Program& program, u64 addr, access_type* out)
 
 
 
-Program make_program(u64 entry_point, b32 is_be, READ_FUNC func,std::vector<Section>& sections);
+Program make_program(u64 entry_point,b32 is_be, READ_FUNC func,void* data);
 void add_func(Program& program,u64 target, u64 pc,u32 size,const std::string& name, b32 external = false);
 void disassemble_console(Program& program);
 std::string default_loc_name(u64 addr);
@@ -131,10 +122,6 @@ b32 block_exists(Program& program, u64 addr);
 b32 func_exists(Program& program, u64 addr);
 void local_call(Program& program,Func& func,u64 target, u64 pc);
 
-Section make_section(u64 base,u32 size,u8* ptr);
-b32 lookup_section(Program& program, u64 addr, Section* section);
-
-Program disass_elf(std::vector<u8>& buf);
 
 u32 get_opcode_type(u32 opcode);
 

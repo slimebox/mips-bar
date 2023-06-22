@@ -12,42 +12,17 @@ namespace beyond_all_repair
 
 
 
-Program make_program(u64 entry_point,b32 is_be, READ_FUNC func,std::vector<Section>& section)
+Program make_program(u64 entry_point,b32 is_be, READ_FUNC func,void* data)
 {
     Program program;
     program.entry_point = entry_point;
-    program.section = section;
     program.is_be = is_be;
     program.read_func = func;
+    program.data = data;
 
     return program;
 }
 
-
-Section make_section(u64 base,u32 size,u8* ptr)
-{
-    Section section;
-    section.base = base;
-    section.size = size;
-    section.ptr = ptr;
-
-    return section;
-}
-
-// defualt section lookup (SLOW!)
-b32 lookup_section(Program& program, u64 addr, Section* out)
-{
-    for(const auto& section : program.section)
-    {
-        if(section.base <= addr && section.base + section.size  >= addr)
-        {
-            *out = section;
-            return true;
-        }
-    }
-
-    return false;
-}
 
 // Function that is fallen into from another block 
 void local_call(Program& program,Func& func,u64 target, u64 pc)
@@ -136,6 +111,9 @@ void add_block(Program& program,Func& func, u64 target, u64 pc, const std::strin
                 // clip old basic block
                 const u32 size_old = block.size;
                 block.size = target - block.addr;
+
+                // rehash the block
+                block.hash = hash_block(program,block);
 
                 // make new basic block out of the remains
                 const u32 new_size = size_old - block.size;
