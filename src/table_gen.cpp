@@ -1,39 +1,68 @@
 namespace beyond_all_repair
 {
-void print_delmit(u32 i)
-{
-	if((i & 0b111) == 0b000)
-	{
-		putchar('\n');
-	}
-}
 
-// used for generating a blank dummy table
+
 void gen_mips_table()
 {
-	for(u32 i = 0; i <= 0b111'111; i++)
+	printf("#include <n64/cpu.h>\n");
+	printf("namespace nintendo64\n");
+	printf("{\n");
+
+	printf("const INSTR_FUNC INSTR_TABLE_DEBUG[] = \n");
+	printf("{\n");
+
+	// gen a dummy table
+	for(u32 i = 0; i < INSTR_TABLE_SIZE; i++)
 	{
-		print_delmit(i);
-		print("{{\"unknown opcode\",instr_type::reg,&unknown_mark,&unknown_disass}}, //0b{:03b}'{:03b}\n",(i >> 3) & 0b111,(i >> 0) & 0b111);
+		if(INSTR_TABLE[i].version <= MIPS3)
+		{
+			if(is_mem_access(INSTR_TABLE[i].fmt) || INSTR_TABLE[i].fmt == instr_type::mips_class)
+			{
+				printf("\t&instr_%s<true>,\n",INSTR_TABLE[i].name);
+			}
+
+			else
+			{
+				printf("\t&instr_%s,\n",INSTR_TABLE[i].name);
+			}
+		}
+
+		else
+		{
+			printf("\t&instr_unknown_opcode,\n");
+		}
 	}
 
-	for(u32 i = 0; i <= 0b111'111; i++)
-	{
-		print_delmit(i);
-		print("{{26,INSTR_TYPE_MASK,BASE_TABLE}}, //0b{:03b}'{:03b}\n",(i >> 3) & 0b111,(i >> 0) & 0b111);
-	}
-
-	for(u32 i = 0; i <= 0b111'111; i++)
-	{
-		print_delmit(i);
-		print("{{\"unknown opcode\",instr_type::reg,&unknown_mark,&unknown_disass_special}}, //0b{:03b}'{:03b}\n",(i >> 3) & 0b111,(i >> 0) & 0b111);
-	}
+	printf("};\n");
 
 
-	for(u32 i = 0; i <= 0b111'11; i++)
+	printf("const INSTR_FUNC INSTR_TABLE_NO_DEBUG[] = \n");
+	printf("{\n");
+
+	// gen a dummy table
+	for(u32 i = 0; i < INSTR_TABLE_SIZE; i++)
 	{
-		print_delmit(i);
-		print("{{\"unknown opcode\",instr_type::reg,&unknown_mark,&unknown_disass_regimm}}, //0b{:03b}'{:02b}\n",(i >> 2) & 0b111,(i >> 0) & 0b11);
+		if(INSTR_TABLE[i].version <= MIPS3)
+		{
+			if(is_mem_access(INSTR_TABLE[i].fmt) || INSTR_TABLE[i].fmt == instr_type::mips_class)
+			{
+				printf("\t&instr_%s<false>,\n",INSTR_TABLE[i].name);
+			}
+
+			else
+			{
+				printf("\t&instr_%s,\n",INSTR_TABLE[i].name);
+			}
+		}
+
+		else
+		{
+			printf("\t&instr_unknown_opcode,\n");
+		}
 	}
+
+	printf("};\n");
+
+	printf("}\n");
 }
 }

@@ -148,6 +148,9 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
         {
             return std::format("{}",instr->name);
         }
+
+        // NOTE: this should not get triggered
+        case instr_type::mips_class: return "unknown_opcode";
     }
 
     // silence GCC

@@ -21,4 +21,6 @@ inline void print(const char* fmt, Args... args)
 {
     printf("%s",std::vformat(fmt, std::make_format_args(args...)).c_str());
 }
+
+
 }

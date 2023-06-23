@@ -1,11 +1,10 @@
 #pragma once
-namespace beyond_all_repair
-{
 #include <lib.h>
 #include <destoer.h>
 
+namespace beyond_all_repair
+{
 using namespace destoer;
-
 
 struct Block
 {
@@ -58,7 +57,7 @@ struct Opcode
     u32 rd = 0;
     u32 rs = 0;
     u32 rt = 0;
-    s16 imm = 0;
+    u16 imm = 0;
 };
 
 

@@ -36,9 +36,27 @@ enum class instr_type
 
     bit_op,
 
+    // note: not a real fmt
+    mips_class,
+
     unk,
 };
 
+b32 is_mem_access(instr_type type)
+{
+    switch(type)
+    {
+        case instr_type::store: return true;
+        case instr_type::store_float: return true;
+        case instr_type::store_cop2: return true;
+
+        case instr_type::load: return true;
+        case instr_type::load_float: return true;
+        case instr_type::load_cop2: return true;
+
+        default: return false;
+    }
+}
 
 
 static constexpr u32 REG_MASK = 0b111'11;
@@ -133,24 +151,13 @@ struct Instr
 const Instr* decode_instr(const Opcode& opcode, u32 version);
 const Instr* decode_regimm(const Opcode& opcode,u32 version);
 const Instr* decode_special(const Opcode& opcode,u32 version);
-const Instr* decode_bshfl(const Opcode& opcode, u32 version);
-const Instr* decode_dbshfl(const Opcode& opcode,u32 version);
-
-const Instr* decode_srl(const Opcode& opcode,u32 version);
-const Instr* decode_srlv(const Opcode& opcode,u32 version);
-const Instr* decode_dsrl(const Opcode& opcode,u32 version);
-const Instr* decode_dsrlv(const Opcode& opcode,u32 version);
+const Instr* decode_cop0(const Opcode& opcode, u32 version);
 
 
 static constexpr u32 INSTR_TYPE_MASK = 0b111'111;
 static constexpr u32 FUNCT_MASK = 0b111'111;
 static constexpr u32 REGIMM_MASK = 0b111'11;
-
-// chain
-static constexpr u32 BSHFL_MASK = 0b111'11;
-static constexpr u32 DBSHFL_MASK = 0b111'11;
-
-static constexpr u32 SHIFT_R_MASK = 0b1;
+static constexpr u32 COP0_RS_MASK = 0b111'11;
 
 enum MIPS_VER
 {
