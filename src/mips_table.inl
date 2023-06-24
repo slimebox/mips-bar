@@ -188,11 +188,11 @@ static constexpr Instr INSTR_TABLE[INSTR_TABLE_SIZE] =
 
     // COP0 RS
     // TODO: we havent done any versioning numbers of this section yet...
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'00
+    {"mfc0",instr_type::reg_rt_rd,nullptr,&disass_mfc0,MIPS1}, //0b000'00
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'01
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'10
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'11
-    {"mtc0",instr_type::reg_rt_rd,nullptr,nullptr,MIPS1}, //0b001'00
+    {"mtc0",instr_type::reg_rt_rd,nullptr,&disass_mtc0,MIPS1}, //0b001'00
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b001'01
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b001'10
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b001'11

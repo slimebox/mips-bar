@@ -93,7 +93,7 @@ b32 scan_stats(Stats& stat,Program& program, u64 offset, u32 size)
             case instr_type::branch_reg: 
             {
                 // ignore ret
-                if(opcode.rs != REG_RA)
+                if(opcode.rs != RA)
                 {
                     stat.func_info[offset].branch_count++;
                 }

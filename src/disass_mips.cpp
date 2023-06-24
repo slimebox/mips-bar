@@ -265,7 +265,7 @@ std::string disass_jalr(Program& program, u64 addr, const Opcode& opcode)
 {
     UNUSED(program); UNUSED(addr);
 
-    if(opcode.rd == REG_RA)
+    if(opcode.rd == RA)
     {
         return std::format("jalr {}",REG_NAMES[opcode.rs]);
     }
@@ -383,4 +383,21 @@ std::string disass_break(Program& program, u64 addr, const Opcode& opcode)
 
     return std::format("break");
 }
+
+std::string disass_mfc0(Program& program, u64 addr, const Opcode& opcode)
+{
+    UNUSED(program); UNUSED(addr);
+
+    return std::format("mfc0 {}, {}",REG_NAMES[opcode.rt],COP0_NAMES[opcode.rd]);
+
+}
+
+std::string disass_mtc0(Program& program, u64 addr, const Opcode& opcode)
+{
+    UNUSED(program); UNUSED(addr);
+
+    return std::format("mfc0 {}, {}",REG_NAMES[opcode.rt],COP0_NAMES[opcode.rd]);
+
+}
+
 }
