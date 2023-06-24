@@ -8,6 +8,7 @@ namespace beyond_all_repair
 		b32 print_opcodes = false;
 		b32 gen = false;
 		b32 linear = false;
+		b32 gen_blank = false;
 	};
 
 	Config parse_config(const char* flags)
@@ -22,6 +23,7 @@ namespace beyond_all_repair
 			{
 				case 'd': config.disassemble = true; break;
 				case 'g': config.gen = true; break;
+				case 'm': config.gen_blank = true; break;
 				case 'a': config.print_addr = true; break;
 				case 'o': config.print_opcodes = true; break;
 				case 'e': config.print_external = true; break;

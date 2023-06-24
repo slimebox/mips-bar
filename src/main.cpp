@@ -25,6 +25,11 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
+	if(config.gen_blank)
+	{
+		gen_blank();
+		return 0;
+	}
 	
 	else
 	{

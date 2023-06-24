@@ -36,6 +36,8 @@ enum class instr_type
 
     bit_op,
 
+    float_rt_fs,
+
     // note: not a real fmt
     mips_class,
 
@@ -239,6 +241,7 @@ const Instr* decode_instr(const Opcode& opcode, u32 version);
 const Instr* decode_regimm(const Opcode& opcode,u32 version);
 const Instr* decode_special(const Opcode& opcode,u32 version);
 const Instr* decode_cop0(const Opcode& opcode, u32 version);
+const Instr* decode_cop1(const Opcode& opcode, u32 version);
 
 
 static constexpr u32 INSTR_TYPE_MASK = 0b111'111;
@@ -414,6 +417,11 @@ void print_console_linear_mips(Program& program, Config& config)
 u32 get_opcode_type(u32 opcode)
 {
     return (opcode >> 26) & INSTR_TYPE_MASK;
+}
+
+u32 get_fs(const Opcode& opcode)
+{
+    return opcode.rd;
 }
 
 }

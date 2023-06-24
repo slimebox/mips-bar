@@ -143,6 +143,12 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
             return std::format("{} 0x{:08x}",instr->name,code);
         }
 
+        case instr_type::float_rt_fs:
+        {
+            const u32 fs = get_fs(opcode);
+            return std::format("{} {}, ${}",instr->name,REG_NAMES[opcode.rt],fs);
+        }
+
         // we hit an actual unknown opcode!
         case instr_type::unk:
         {

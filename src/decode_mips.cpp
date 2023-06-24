@@ -1,15 +1,40 @@
 
 namespace beyond_all_repair
 {
+// base offsets
 static constexpr u32 BASE_OFFSET = 0;
 static constexpr u32 SPECIAL_OFFSET = BASE_OFFSET + INSTR_TYPE_MASK + 1;
 static constexpr u32 REGIMM_OFFSET = SPECIAL_OFFSET + FUNCT_MASK + 1;
 
+
+// cop0 offsets
 static constexpr u32 COP0_RS_OFFSET = REGIMM_OFFSET + REGIMM_MASK + 1;
+static constexpr u32 COP0_END = COP0_RS_OFFSET + COP0_RS_MASK + 1;
 
 
-static constexpr u32 LAST_OFFSET = COP0_RS_OFFSET;
-static constexpr u32 LAST_MASK = COP0_RS_MASK;
+
+// cop1 offsets
+static constexpr u32 COP1_RS_SHIFT = 21;
+static constexpr u32 COP1_RS_MASK = 0b111'11;
+
+static constexpr u32 COP1_BC_MASK = 0b111'11;
+static constexpr u32 COP1_BC_SHIFT = 16;
+
+static constexpr u32 COP1_FMT_SHIFT = 0;
+static constexpr u32 COP1_FMT_MASK = 0b111'111;
+
+static constexpr u32 COP1_RS_OFFSET = COP0_END;
+static constexpr u32 COP1_BC_OFFSET = COP1_RS_OFFSET + COP1_RS_MASK + 1;
+
+static constexpr u32 COP1_FMT_S_OFFSET = COP1_BC_OFFSET + COP1_BC_MASK + 1;
+static constexpr u32 COP1_FMT_D_OFFSET = COP1_FMT_S_OFFSET + COP1_FMT_MASK + 1;
+static constexpr u32 COP1_FMT_W_OFFSET = COP1_FMT_D_OFFSET + COP1_FMT_MASK + 1;
+static constexpr u32 COP1_FMT_L_OFFSET = COP1_FMT_W_OFFSET + COP1_FMT_MASK + 1;
+
+
+
+static constexpr u32 LAST_OFFSET = COP1_FMT_L_OFFSET;
+static constexpr u32 LAST_MASK = COP1_FMT_MASK;
 
 // NOTE: generally every 4 or 8 instrs have the same format.
 
@@ -56,9 +81,8 @@ struct Decode
 static constexpr u32 REGIMM_SHIFT = 16;
 static constexpr u32 SPECIAL_SHIFT = 0;
 static constexpr u32 BASE_SHIFT = 26;
-static constexpr u32 COP0_RS_SHIFT = 21;
 
-static constexpr Decode DECODE_TABLE[INSTR_TYPE_MASK + 1] =
+static constexpr Decode BASE_DECODE_TABLE[INSTR_TYPE_MASK + 1] =
 {
     {SPECIAL_SHIFT,FUNCT_MASK,SPECIAL_OFFSET}, //0b000'000
     {REGIMM_SHIFT,REGIMM_MASK,REGIMM_OFFSET}, //0b000'001
@@ -202,10 +226,10 @@ const Instr* decode_instr_chained(const Opcode& opcode, u32 version)
     return instr;    
 }
 
-u32 calc_table_offset(const Opcode& opcode)
+u32 calc_base_table_offset(const Opcode& opcode)
 {
     const u32 type = get_opcode_type(opcode.op);
-    const auto decode = DECODE_TABLE[type];
+    const auto decode = BASE_DECODE_TABLE[type];
 
     const u32 table_offset = (opcode.op >> decode.shift) & decode.mask;
 
@@ -214,7 +238,7 @@ u32 calc_table_offset(const Opcode& opcode)
 
 const Instr* decode_instr(const Opcode& opcode, u32 version)
 {
-    const u32 offset = calc_table_offset(opcode);
+    const u32 offset = calc_base_table_offset(opcode);
     const Instr* instr = &INSTR_TABLE[offset];
 
     // opcode not supported on this version of the architecture
@@ -285,6 +309,8 @@ const Instr* decode_regimm(const Opcode& opcode,u32 version)
 static constexpr u32 C0_BIT = 25;
 static constexpr u32 BC = 0b01'000; 
 
+static constexpr u32 COP0_RS_SHIFT = 21;
+
 u32 calc_cop0_table_offset(const Opcode& opcode)
 {
     // NOTE: we probably could defer this futher at the top but only chain
@@ -300,17 +326,17 @@ u32 calc_cop0_table_offset(const Opcode& opcode)
         assert(false);
     }
 
-    const u32 idx = (opcode.op >> COP0_RS_SHIFT) & COP0_RS_MASK;
+    const u32 type = opcode.rs;
 
     // TODO: handle this
-    if(idx == BC)
+    if(type == BC)
     {
         assert(false);
     }
 
     else
     {
-        return idx + COP0_RS_OFFSET;
+        return type + COP0_RS_OFFSET;
     }    
 }
 
@@ -319,6 +345,66 @@ const Instr* decode_cop0(const Opcode& opcode, u32 version)
     UNUSED(version);
 
     const u32 offset = calc_cop0_table_offset(opcode);
+    return &INSTR_TABLE[offset];
+}
+
+
+
+static constexpr Decode COP1_DECODE_TABLE[COP1_RS_MASK + 1] =
+{
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b000'00
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b000'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b000'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b000'11
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b001'00
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b001'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b001'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b001'11
+
+    {COP1_BC_SHIFT,COP1_BC_MASK,COP1_BC_OFFSET}, //0b010'00
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b010'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b010'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b010'11
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b011'00
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b011'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b011'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b011'11
+
+    {COP1_FMT_SHIFT,COP1_FMT_MASK,COP1_FMT_S_OFFSET}, //0b100'00
+    {COP1_FMT_SHIFT,COP1_FMT_MASK,COP1_FMT_D_OFFSET}, //0b100'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b100'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b100'11
+    {COP1_FMT_SHIFT,COP1_FMT_MASK,COP1_FMT_W_OFFSET}, //0b101'00
+    {COP1_FMT_SHIFT,COP1_FMT_MASK,COP1_FMT_L_OFFSET}, //0b101'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b101'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b101'11
+
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b110'00
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b110'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b110'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b110'11
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b111'00
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b111'01
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b111'10
+    {COP1_RS_SHIFT,COP1_RS_MASK,COP1_RS_OFFSET}, //0b111'11
+};
+
+
+u32 calc_cop1_table_offset(const Opcode& opcode)
+{
+    const u32 type = opcode.rs;
+    const auto decode = COP1_DECODE_TABLE[type];
+
+    const u32 table_offset = (opcode.op >> decode.shift) & decode.mask;
+
+    return decode.offset + table_offset;
+}
+
+const Instr* decode_cop1(const Opcode& opcode, u32 version)
+{
+    UNUSED(version);
+
+    const u32 offset = calc_cop1_table_offset(opcode);
     return &INSTR_TABLE[offset];
 }
 

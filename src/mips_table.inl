@@ -1,6 +1,6 @@
 
 // NOTE: instruciton classes are specified by UPPER CASE
-static constexpr Instr INSTR_TABLE[INSTR_TABLE_SIZE] = 
+static constexpr Instr INSTR_TABLE[] = 
 {
     // BASE, i.e the table circles back around
     {"SPECIAL",instr_type::mips_class,nullptr,nullptr,MIPS1,&decode_special}, //0b000'000
@@ -21,9 +21,8 @@ static constexpr Instr INSTR_TABLE[INSTR_TABLE_SIZE] =
     {"xori",instr_type::imm_unsigned,nullptr,nullptr,MIPS1}, //0b001'110
     {"lui",instr_type::imm_unsigned,nullptr,&disass_lui,MIPS1}, //0b001'111
     
-    // TODO: we should impl coprocessor instrucitons but skip for now as they are not relevant
     {"COP0",instr_type::mips_class,nullptr,&unknown_disass_cop0,MIPS1,&decode_cop0}, //0b010'000
-    {"COP1",instr_type::mips_class,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'001
+    {"COP1",instr_type::mips_class,nullptr,&unknown_disass_cop1,MIPS1,&decode_cop1}, //0b010'001
     {"COP2",instr_type::mips_class,nullptr,&unknown_disass_cop2,MIPS1}, //0b010'010
     {"COP1X",instr_type::mips_class,nullptr,&unknown_disass_cop1x,MIPS4}, //0b010'011
     {"beql",instr_type::branch_rs_rt,&mark_beql,nullptr,MIPS2}, //0b010'100
@@ -187,45 +186,416 @@ static constexpr Instr INSTR_TABLE[INSTR_TABLE_SIZE] =
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b111'11
 
     // COP0 RS
-    // TODO: we havent done any versioning numbers of this section yet...
+    // TODO: we havent done any versioning numbers for coprocessors
     {"mfc0",instr_type::reg_rt_rd,nullptr,&disass_mfc0,MIPS1}, //0b000'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b000'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'11
     {"mtc0",instr_type::reg_rt_rd,nullptr,&disass_mtc0,MIPS1}, //0b001'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b001'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b001'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b001'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'11
 
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b010'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b010'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b010'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b010'11
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b011'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b011'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b011'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b011'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'11
 
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b100'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b100'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1},//0b100'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1},//0b100'11
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b101'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b101'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b101'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b101'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'11
 
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b110'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b110'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b110'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b110'11
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b111'00
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b111'01
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b111'10
-    {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b111'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'11  
+
+    // COP1 RS
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'01
+    {"cfc1",instr_type::float_rt_fs,nullptr,nullptr,MIPS1}, //0b000'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'11
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'11
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'11
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'11
+
+    // COP1 BC
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'11
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'11
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'11
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'11
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'00
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'01
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'10
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'11   
+
+    // COP1 FMT S
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'111 
+
+    // COP1 FMT D
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'111  
+
+    // COP1 FMT W
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'111 
+
+    // COP1 FMT L
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b000'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b001'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b010'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b011'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b100'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b101'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b110'111
+
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'000
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'001
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'010
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'011
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'100
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'101
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'110
+    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop0,MIPS1}, //0b111'111 
 
     // VERSION UNK - used as a dummy value for version failure 
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS3},
 };
+
+static constexpr u32 ACTUAL_TABLE_SIZE = sizeof(INSTR_TABLE) / sizeof(INSTR_TABLE[0]);
+
+// check everything has an initalizer
+static_assert(INSTR_TABLE_SIZE == ACTUAL_TABLE_SIZE);
 
 const Instr* const VER_UNKNOWN = &INSTR_TABLE[INSTR_TABLE_SIZE - 1];
