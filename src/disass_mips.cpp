@@ -149,6 +149,34 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
             return std::format("{} {}, $f{}",instr->name,REG_NAMES[opcode.rt],fs);
         }
 
+        case instr_type::float_fd_fs:
+        {
+            const u32 fd = get_fd(opcode);
+            const u32 fs = get_fs(opcode);
+            return std::format("{} $f{}, $f{}",instr->name,fd,fs);
+        }
+
+        case instr_type::float_fd_fs_ft:
+        {
+            const u32 fd = get_fd(opcode);
+            const u32 fs = get_fs(opcode);
+            const u32 ft = get_ft(opcode);
+            return std::format("{} $f{}, $f{}, $f{}",instr->name,fd,fs,ft);     
+        }
+
+        case instr_type::float_fs_ft:
+        {
+            const u32 fs = get_fs(opcode);
+            const u32 ft = get_ft(opcode);
+            return std::format("{} $f{}, $f{}",instr->name,fs,ft);            
+        }
+
+        case instr_type::branch_cop_cond:
+        {
+            const u64 target = branch_addr(addr,opcode.imm);
+            return std::format("{} {}",instr->name,loc_name(program,target));
+        }
+
         // we hit an actual unknown opcode!
         case instr_type::unk:
         {

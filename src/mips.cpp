@@ -37,6 +37,10 @@ enum class instr_type
     bit_op,
 
     float_rt_fs,
+    float_fd_fs,
+    float_fd_fs_ft,
+    float_fs_ft,
+    branch_cop_cond,
 
     // note: not a real fmt
     mips_class,
@@ -170,6 +174,7 @@ static constexpr int SP = 29;
 static constexpr int FP = 30; // also reffered to as fp (frame pointer)
 static constexpr int RA = 31;
 
+static constexpr u32 REG_NAMES_SIZE = 32;
 
 // cop0 regs
 static constexpr int INDEX = 0;
@@ -194,7 +199,7 @@ static constexpr int TAGLO = 28;
 static constexpr int TAGHI = 29;
 
 static constexpr int ERROR_EPC = 30;
-static constexpr u32 REG_NAMES_SIZE = 32;
+
 
 
 static constexpr u32 MIPS_INSTR_SIZE = sizeof(u32);

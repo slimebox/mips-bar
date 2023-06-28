@@ -125,5 +125,6 @@ void local_call(Program& program,Func& func,u64 target, u64 pc);
 u32 get_opcode_type(u32 opcode);
 u32 get_fs(const Opcode& opcode);
 u32 get_ft(const Opcode& opcode);
+u32 get_fd(const Opcode& opcode);
 
 }

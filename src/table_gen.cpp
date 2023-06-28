@@ -42,7 +42,26 @@ void gen_mips_table()
 
 			else
 			{
-				printf("\t&instr_%s,\n",INSTR_TABLE[i].name);
+				// floating point func replace '.' with '_' for name
+				if(strchr(INSTR_TABLE[i].name, '.'))
+				{
+					std::string name = INSTR_TABLE[i].name;
+
+					for(auto& c : name)
+					{
+						if(c == '.')
+						{
+							c = '_';
+						}
+					}
+
+					printf("\t&instr_%s,\n",name.c_str());
+				}
+
+				else
+				{
+					printf("\t&instr_%s,\n",INSTR_TABLE[i].name);
+				}
 			}
 		}
 
@@ -70,7 +89,26 @@ void gen_mips_table()
 
 			else
 			{
-				printf("\t&instr_%s,\n",INSTR_TABLE[i].name);
+				// floating point func replace '.' with '_' for name
+				if(strchr(INSTR_TABLE[i].name, '.'))
+				{
+					std::string name = INSTR_TABLE[i].name;
+
+					for(auto& c : name)
+					{
+						if(c == '.')
+						{
+							c = '_';
+						}
+					}
+
+					printf("\t&instr_%s,\n",name.c_str());
+				}
+
+				else
+				{
+					printf("\t&instr_%s,\n",INSTR_TABLE[i].name);
+				}
 			}
 		}
 
