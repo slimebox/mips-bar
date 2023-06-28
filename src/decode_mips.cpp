@@ -9,7 +9,8 @@ static constexpr u32 REGIMM_OFFSET = SPECIAL_OFFSET + FUNCT_MASK + 1;
 
 // cop0 offsets
 static constexpr u32 COP0_RS_OFFSET = REGIMM_OFFSET + REGIMM_MASK + 1;
-static constexpr u32 COP0_END = COP0_RS_OFFSET + COP0_RS_MASK + 1;
+static constexpr u32 COP0_FUNCT_OFFSET = COP0_RS_OFFSET + COP0_RS_MASK + 1;
+static constexpr u32 COP0_END = COP0_FUNCT_OFFSET + COP0_FUNCT_MASK + 1;
 
 
 
@@ -323,7 +324,8 @@ u32 calc_cop0_table_offset(const Opcode& opcode)
     // TODO: do we need to check that the zero's exist for this?
     if(is_set(opcode.op,C0_BIT))
     {
-        assert(false);
+        const u32 type = opcode.op & COP0_FUNCT_MASK;
+        return type + COP0_FUNCT_OFFSET;
     }
 
     const u32 type = opcode.rs;

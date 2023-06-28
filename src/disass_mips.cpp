@@ -62,7 +62,7 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
 
         case instr_type::store_float:
         {
-            return std::format("{} $f{}, {}({})",instr->name,opcode.rt,opcode.imm,REG_NAMES[opcode.rs]);
+            return std::format("{} $f{}, {}({})",instr->name,get_ft(opcode),opcode.imm,REG_NAMES[opcode.rs]);
         }
 
         // TODO: add options to fmt custom register names
@@ -80,7 +80,7 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
 
         case instr_type::load_float:
         {
-            return std::format("{} $f{}, {}({})",instr->name,opcode.rt,opcode.imm,REG_NAMES[opcode.rs]);
+            return std::format("{} $f{}, {}({})",instr->name,get_ft(opcode),opcode.imm,REG_NAMES[opcode.rs]);
         }
 
         // TODO: add options to fmt custom register names
@@ -146,7 +146,7 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
         case instr_type::float_rt_fs:
         {
             const u32 fs = get_fs(opcode);
-            return std::format("{} {}, ${}",instr->name,REG_NAMES[opcode.rt],fs);
+            return std::format("{} {}, $f{}",instr->name,REG_NAMES[opcode.rt],fs);
         }
 
         // we hit an actual unknown opcode!
