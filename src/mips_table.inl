@@ -335,9 +335,9 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'11
 
     // COP1 BC
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'00
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'01
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'10
+    {"bc1f",instr_type::branch_cop_cond,&unknown_mark_err,nullptr,MIPS1}, //0b000'00
+    {"bc1t",instr_type::branch_cop_cond,&unknown_mark_err,nullptr,MIPS1}, //0b000'01
+    {"bc1fl",instr_type::branch_cop_cond,&unknown_mark_err,nullptr,MIPS1}, //0b000'10
     {"bc1tl",instr_type::branch_cop_cond,&unknown_mark_err,nullptr,MIPS1}, //0b000'11
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'00
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'01
@@ -409,11 +409,11 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'111
 
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'001
+    {"cvt.d.s",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'001
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'010
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'101
+    {"cvt.w.s",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'100
+    {"cvt.l.s",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'101
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'111
 
@@ -447,7 +447,7 @@ static constexpr Instr INSTR_TABLE[] =
     // COP1 FMT D
     {"add.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'000
     {"sub.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'010
+    {"mul.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'010
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'011
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'100
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'101
@@ -485,8 +485,8 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'001
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'010
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'101
+    {"cvt.w.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'100
+    {"cvt.l.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'101
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'111
 
@@ -514,7 +514,7 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'011
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'100
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'110
+    {"c.le.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'111  
 
     // COP1 FMT W
@@ -627,8 +627,8 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'001
+    {"cvt.s.l",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'000
+    {"cvt.d.l",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'001
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'010
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'011
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'100
