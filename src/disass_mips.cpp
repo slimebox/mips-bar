@@ -11,11 +11,22 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
     {
         case instr_type::imm_signed:
         {
+            if(opcode.rt == opcode.rs)
+            {
+                return std::format("{} {}, 0x{:04x}",instr->name,REG_NAMES[opcode.rt],u16(opcode.imm));
+            }
+
             return std::format("{} {}, {}, {}",instr->name,REG_NAMES[opcode.rt],REG_NAMES[opcode.rs],opcode.imm);
         }
 
+        // NOTE: lui uses a special handler...
         case instr_type::imm_unsigned:
         {
+            if(opcode.rt == opcode.rs)
+            {
+                return std::format("{} {}, 0x{:04x}",instr->name,REG_NAMES[opcode.rt],u16(opcode.imm));
+            }
+
             return std::format("{} {}, {}, 0x{:04x}",instr->name,REG_NAMES[opcode.rt],REG_NAMES[opcode.rs],u16(opcode.imm));
         }
 
@@ -93,11 +104,21 @@ std::string disass_mips_default(Program& program, u64 addr, const Opcode &opcode
 
         case instr_type::reg_rd_rs_rt:
         {
+            if(opcode.rd == opcode.rs)
+            {
+                return std::format("{} {}, {}",instr->name,REG_NAMES[opcode.rd],REG_NAMES[opcode.rt]);
+            }
+
             return std::format("{} {}, {}, {}",instr->name,REG_NAMES[opcode.rd],REG_NAMES[opcode.rs],REG_NAMES[opcode.rt]);
         }
 
         case instr_type::reg_rd_rt_rs:
         {
+            if(opcode.rd == opcode.rt)
+            {
+                return std::format("{} {}, {}",instr->name,REG_NAMES[opcode.rd],REG_NAMES[opcode.rs]);
+            }
+
             return std::format("{} {}, {}, {}",instr->name,REG_NAMES[opcode.rd],REG_NAMES[opcode.rt],REG_NAMES[opcode.rs]);
         }
 
@@ -388,6 +409,39 @@ std::string disass_or(Program& program, u64 addr, const Opcode& opcode)
     const Instr* instr = decode_instr(opcode,MIPS1);
     return disass_mips_default(program,addr,opcode,instr);
 }
+
+std::string disass_nor(Program& program, u64 addr, const Opcode& opcode)
+{
+    UNUSED(program); UNUSED(addr); 
+
+    if(opcode.rt == 0)
+    {
+        return std::format("not {}, {}",REG_NAMES[opcode.rd],REG_NAMES[opcode.rs]);
+    }
+
+    const Instr* instr = decode_instr(opcode,MIPS1);
+    return disass_mips_default(program,addr,opcode,instr);
+}
+
+std::string disass_addu(Program& program, u64 addr, const Opcode& opcode)
+{
+    UNUSED(program); UNUSED(addr); 
+
+    if(opcode.rt == 0)
+    {
+        return std::format("move {}, {}",REG_NAMES[opcode.rd],REG_NAMES[opcode.rs]);
+    }
+
+    else if(opcode.rs == 0)
+    {
+        return std::format("move {}, {}",REG_NAMES[opcode.rd],REG_NAMES[opcode.rt]);
+    }
+
+    const Instr* instr = decode_instr(opcode,MIPS1);
+    return disass_mips_default(program,addr,opcode,instr);
+}
+
+
 
 // NOTE: this is pseudo op and not actual instr
 std::string disass_li(Program& program, u64 addr, const Opcode& opcode)

@@ -113,13 +113,13 @@ static constexpr Instr INSTR_TABLE[] =
     {"ddivu",instr_type::reg_rs_rt,nullptr,nullptr,MIPS3}, //0b011'111
 
     {"add",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'000
-    {"addu",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'001
+    {"addu",instr_type::reg_rd_rs_rt,nullptr,&disass_addu,MIPS1}, //0b100'001
     {"sub",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'010
     {"subu",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'011
     {"and",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'100
     {"or",instr_type::reg_rd_rs_rt,nullptr,&disass_or,MIPS1}, //0b100'101
     {"xor",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'110
-    {"nor",instr_type::reg_rd_rs_rt,nullptr,nullptr,MIPS1}, //0b100'111
+    {"nor",instr_type::reg_rd_rs_rt,nullptr,&disass_nor,MIPS1}, //0b100'111
 
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b101'000
     {"unknown_opcode",instr_type::unk,&unknown_mark_err,nullptr,MIPS1}, //0b101'001
