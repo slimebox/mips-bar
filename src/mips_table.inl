@@ -448,10 +448,10 @@ static constexpr Instr INSTR_TABLE[] =
     {"add.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'000
     {"sub.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'001
     {"mul.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'011
+    {"div.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'011
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'100
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'110
+    {"mov.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b000'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'111
 
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'000
@@ -512,7 +512,7 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'001
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'010
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'100
+    {"c.lt.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'100
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'101
     {"c.le.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'111  
