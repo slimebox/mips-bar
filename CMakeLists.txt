@@ -8,16 +8,12 @@ project(bar)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-file(GLOB src_files
+file(GLOB bar_src_files
 	"../src/*.h"
 	"src/main.cpp"
 )
 
-
-add_executable(bar ${src_files} ${frontend_files})
-
-
-
+add_executable(bar ${bar_src_files})
 
 if(WIN32)
 

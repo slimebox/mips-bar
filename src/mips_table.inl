@@ -299,11 +299,11 @@ static constexpr Instr INSTR_TABLE[] =
 
     // COP1 RS
     {"mfc1",instr_type::float_rt_fs,nullptr,nullptr,MIPS1}, //0b000'00
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'01
+    {"dmfc1",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'01
     {"cfc1",instr_type::float_rt_fs,nullptr,nullptr,MIPS1}, //0b000'10
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'11
     {"mtc1",instr_type::float_rt_fs,nullptr,nullptr,MIPS1}, //0b001'00
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'01
+    {"dmtc1",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'01
     {"ctc1",instr_type::float_rt_fs,nullptr,nullptr,MIPS1}, //0b001'10
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'11
 
@@ -376,27 +376,27 @@ static constexpr Instr INSTR_TABLE[] =
     {"sub.s",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'001
     {"mul.s",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'010
     {"div.s",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'101
+    {"sqrt.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'100
+    {"abs.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'101
     {"mov.s",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b000'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'111
+    {"neg.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'000
+    {"round.l.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'000
     {"trunc.l.s",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b001'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'100
+    {"ceil.l.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'010
+    {"floor.l.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'011
+    {"round.w.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'100
     {"trunc.w.s",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b001'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'111
+    {"ceil.w.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'110
+    {"floor.w.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'111
 
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'011
+    {"movcf.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'001
+    {"movz.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'010
+    {"movn.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'011
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'110
+    {"recip.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'101
+    {"rsqrt.s",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'111
 
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'000
@@ -426,50 +426,50 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'111
+    {"c.f.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'000
+    {"c.un.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'001
+    {"c.eq.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'010
+    {"c.ueq.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'011
+    {"c.olt.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'100
+    {"c.ult.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'101
+    {"c.ole.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'110
+    {"c.ule.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'101
-    {"c.le.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'111 
+    {"c.sf.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'000
+    {"c.ngle.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'001
+    {"c.seq.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'010
+    {"c.ngl.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'011
+    {"c.lt.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'100
+    {"c.nge.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'101
+    {"c.le.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'110
+    {"c.ngt.s",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'111
 
-    // COP1 FMT D
+        // COP1 FMT D
     {"add.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'000
     {"sub.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'001
     {"mul.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'010
     {"div.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b000'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'101
+    {"sqrt.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b000'100
+    {"abs.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b000'101
     {"mov.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b000'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'111
+    {"neg.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b000'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'000
+    {"roundl.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b001'000
     {"trunc.l.d",instr_type::float_fd_fs_ft,nullptr,nullptr,MIPS1}, //0b001'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'100
+    {"ceil.l.d",instr_type::float_fd_fs,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'010
+    {"floor.l.d",instr_type::float_fd_fs,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'011
+    {"round.w.d",instr_type::float_fd_fs,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'100
     {"trunc.w.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b001'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'111
+    {"ceil.w.d",instr_type::float_fd_fs,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'110
+    {"floor.w.d",instr_type::float_fd_fs,nullptr,&unknown_disass_cop1,MIPS1}, //0b001'111
 
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'011
+    {"movcf.d",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'001
+    {"movz.d",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'010
+    {"movn.d",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'011
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'110
+    {"recip.d",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'101
+    {"rsqrt.d",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS4}, //0b010'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b010'111
 
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'000
@@ -482,7 +482,7 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b011'111
 
     {"cvt.s.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'001
+    {"invalid_opcode_cvt.d.d",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'001
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'010
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b100'011
     {"cvt.w.d",instr_type::float_fd_fs,nullptr,nullptr,MIPS1}, //0b100'100
@@ -499,23 +499,23 @@ static constexpr Instr INSTR_TABLE[] =
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'110
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b101'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'011
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'101
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b110'111
+    {"c.f.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'000
+    {"c.un.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'001
+    {"c.eq.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'010
+    {"c.ueq.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'011
+    {"c.olt.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'100
+    {"c.ult.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'101
+    {"c.ole.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'110
+    {"c.ule.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'111
 
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'000
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'001
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'010
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'011
-    {"c.lt.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'100
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'101
-    {"c.le.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b111'110
-    {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b111'111  
+    {"c.sf.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'000
+    {"c.ngle.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'001
+    {"c.seq.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'010
+    {"c.ngl.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'011
+    {"c.lt.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'100
+    {"c.nge.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'101
+    {"c.le.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'110
+    {"c.ngt.d",instr_type::float_fs_ft,nullptr,nullptr,MIPS1}, //0b110'111
 
     // COP1 FMT W
     {"unknown_opcode",instr_type::unk,nullptr,&unknown_disass_cop1,MIPS1}, //0b000'000
