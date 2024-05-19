@@ -177,30 +177,34 @@ static constexpr int RA = 31;
 static constexpr u32 REG_NAMES_SIZE = 32;
 
 // cop0 regs
-static constexpr int INDEX = 0;
-static constexpr int RANDOM = 1;
-static constexpr int ENTRY_LO_ZERO = 2;
-static constexpr int ENTRY_LO_ONE = 3;
-static constexpr int CONTEXT = 4;
-static constexpr int PAGE_MASK = 5;
+    static constexpr int INDEX = 0;
+    static constexpr int RANDOM = 1;
+    static constexpr int ENTRY_LO_ZERO = 2;
+    static constexpr int ENTRY_LO_ONE = 3;
+    static constexpr int CONTEXT = 4;
+    static constexpr int PAGE_MASK = 5;
+    static constexpr int WIRED = 6;
 
-static constexpr int BAD_VADDR = 8;
-static constexpr int COUNT = 9;
-static constexpr int ENTRY_HI = 10;
-static constexpr int COMPARE = 11;
-static constexpr int STATUS = 12;
+    static constexpr int BAD_VADDR = 8;
+    static constexpr int COUNT = 9;
+    static constexpr int ENTRY_HI = 10;
+    static constexpr int COMPARE = 11;
+    static constexpr int STATUS = 12;
 
-static constexpr int CAUSE = 13;
-static constexpr int EPC = 14;
-static constexpr int PRID = 15;
-static constexpr int CONFIG = 16;
+    static constexpr int CAUSE = 13;
+    static constexpr int EPC = 14;
+    static constexpr int PRID = 15;
+    static constexpr int CONFIG = 16;
+    static constexpr int LLADDR = 17;
+    static constexpr int WATCH_LO = 18;
+    static constexpr int WATCH_HI = 19;
+    static constexpr int XCONFIG = 20;
 
-static constexpr int TAGLO = 28;
-static constexpr int TAGHI = 29;
-
-static constexpr int ERROR_EPC = 30;
-
-
+    static constexpr int PARITY_ERROR = 26;
+    static constexpr int CACHE_ERROR = 27;
+    static constexpr int TAGLO = 28;
+    static constexpr int TAGHI = 29;
+    static constexpr int ERROR_EPC = 30;
 
 static constexpr u32 MIPS_INSTR_SIZE = sizeof(u32);
 
