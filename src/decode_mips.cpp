@@ -47,6 +47,20 @@ static constexpr u32 INSTR_TABLE_SIZE = LAST_OFFSET + LAST_MASK + 2;
 
 // NOTE: instruction class names that require further decoding are denoted with CAPS
 
+#define INSTR(a,b,c,d,e,f) {a,b,c,d,e,f},
+
+static constexpr Instr INSTR_TABLE[] = {
+    #include <mips_table.inl>
+};
+#undef INSTR(a,b,c,d,e,f)
+
+static constexpr u32 ACTUAL_TABLE_SIZE = sizeof(INSTR_TABLE) / sizeof(INSTR_TABLE[0]);
+
+// check everything has an initalizer
+static_assert(INSTR_TABLE_SIZE == ACTUAL_TABLE_SIZE);
+
+const Instr* const VER_UNKNOWN = &INSTR_TABLE[INSTR_TABLE_SIZE - 1];
+
 #include <mips_table.inl>
 
 // mips1-3

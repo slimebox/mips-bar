@@ -251,7 +251,7 @@ struct Instr
     u32 version;
 
     // fptr that will give back the correct instr field
-    CHAIN_FUNC chain = nullptr;
+    CHAIN_FUNC chain;
 };
 
 const Instr* decode_instr(const Opcode& opcode, u32 version);
